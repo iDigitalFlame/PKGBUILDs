@@ -8,8 +8,8 @@
 
 pkgbase=opencv
 pkgname=(opencv opencv-samples python-opencv)
-pkgver=4.7.0
-pkgrel=10
+pkgver=4.8.0
+pkgrel=3
 pkgdesc='Open Source Computer Vision Library'
 arch=(x86_64)
 license=(BSD)
@@ -26,13 +26,16 @@ optdepends=('opencv-samples: samples'
             'java-runtime: Java interface')
 source=(https://github.com/opencv/opencv/archive/$pkgver/$pkgname-$pkgver.tar.gz
         https://github.com/opencv/opencv_contrib/archive/$pkgver/opencv_contrib-$pkgver.tar.gz
-        vtk9.patch)
-sha256sums=('8df0079cdbe179748a18d44731af62a245a45ebf5085223dc03133954c662973'
-            '42df840cf9055e59d0e22c249cfb19f04743e1bdad113d31b1573d3934d62584'
-            'f35a2d4ea0d6212c7798659e59eda2cb0b5bc858360f7ce9c696c77d3029668e')
+        vtk9.patch
+        cuda-12.2.patch)
+sha256sums=('cbf47ecc336d2bff36b0dcd7d6c179a9bb59e805136af6b9670ca944aef889bd'
+            'b4aef0f25a22edcd7305df830fa926ca304ea9db65de6ccd02f6cfa5f3357dbb'
+            'f35a2d4ea0d6212c7798659e59eda2cb0b5bc858360f7ce9c696c77d3029668e'
+            '2acacd8df0fab431aa2197304c4496f3e4d8a8de9305994a6474e4c66dc3a159')
 
 prepare() {
   patch -d $pkgname-$pkgver -p1 < vtk9.patch # Don't require all vtk optdepends
+  patch -d $pkgname-$pkgver -p1 < cuda-12.2.patch # Fix build with CUDA 12.2
 }
 
 build() {
@@ -41,6 +44,7 @@ build() {
   _opts="-DWITH_OPENCL=ON \
          -DWITH_OPENGL=ON \
          -DOpenGL_GL_PREFERENCE=LEGACY \
+         -DCMAKE_CXX_STANDARD=17 \
          -DWITH_TBB=ON \
          -DWITH_VULKAN=ON \
          -DWITH_QT=ON \
@@ -62,7 +66,9 @@ build() {
          -DOPENCV_ENABLE_NONFREE=ON \
          -DOPENCV_JNI_INSTALL_PATH=lib \
          -DOPENCV_GENERATE_SETUPVARS=OFF \
-         -DEIGEN_INCLUDE_PATH=/usr/include/eigen3"
+         -DEIGEN_INCLUDE_PATH=/usr/include/eigen3 \
+         -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON \
+         -Dprotobuf_MODULE_COMPATIBLE=ON"
  
   cmake -B build -S $pkgname-$pkgver $_opts
   cmake --build build

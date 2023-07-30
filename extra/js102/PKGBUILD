@@ -3,8 +3,8 @@
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - configure with --disable-lto, --disable-rust-simd
 
-pkgname=js102 
-pkgver=102.11.0
+pkgname=js102
+pkgver=102.13.0
 pkgrel=1
 pkgdesc="JavaScript interpreter and libraries - Version 102"
 url="https://spidermonkey.dev/"
@@ -35,7 +35,7 @@ _relver=${pkgver}esr
 source=(
   https://archive.mozilla.org/pub/firefox/releases/$_relver/source/firefox-$_relver.source.tar.xz{,.asc}
 )
-b2sums=('b19db1b35e6c652e2cd44ec5219bd5c42aacd55987962dbcaf50b5ec54d2ac5066290264f938ba3d45ef111779b9f27b06736ae7df11fa62478ab2179acfe723'
+b2sums=('c835146f8eb5d45bcc5eebb5a510cc1b0b1f36ad7b47ed10eed743e9fddc2555f3458f19ab75ed12a510e896be727bf2bbee8521af439f323c48d8c1bbd82499'
         'SKIP')
 validpgpkeys=(
   14F26682D0916CDD81E37B6D61B7B526D98F0353  # Mozilla Software Releases <release@mozilla.com>

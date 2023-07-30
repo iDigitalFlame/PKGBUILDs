@@ -1,0 +1,60 @@
+# Maintainer: Alexander Rødseth <rodseth@gmail.com>
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Orhun Parmaksız <orhun@archlinux.org>
+# Contributor: T. Jameson Little <t.jameson.little at gmail dot com>
+# Contributor: Usagi Ito <usagi@WonderRabbitProject.net>
+# Contributor: siasia <http://pastebin.com/qsBEmNCw>
+# Contributor: Julien Nicoulaud <julien.nicoulaud@gmail.com>
+# Contributor: Jacob Bang <julemand101gmail.com>
+
+# ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
+#  - added source and sha512 for ARMv7h, AArch64 builds of Dart
+
+pkgname=dart
+pkgver=3.0.5
+pkgrel=1
+pkgdesc='The dart programming language SDK'
+arch=('x86_64' 'armv7h' 'aarch64')
+url='https://www.dartlang.org/'
+depends=('bash')
+license=('BSD')
+makedepends=('setconf')
+options=('!strip')
+source_x86_64+=("$pkgname-$pkgver-64.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-x64-release.zip")
+source_armv7h+=("$pkgname-$pkgver-arm.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-arm-release.zip")
+source_aarch64+=("$pkgname-$pkgver-arm64.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-arm64-release.zip")
+sha512sums_x86_64=('e7153bf5b0d01a9c013bfbb7d29993061492050fdc1a05a25b4b1f3736ffc384602be1312f40c6a7bea91116fc128c46085539b0394269e0c09624c0c5db99fd')
+sha512sums_armv7h=('a7cf5d3683ef27008f2e145c06728624d9a49faa9e4effc3d6d8cd999fb350058658a7efcc41c27472bb526490ea2445f8a33f06373ac35e232544f07dd71437')
+sha512sums_aarch64=('f53d04424ea992f7be0ed1ca6cd7ce6139c23b7de5c0fc3d1719ce95bd39dbfa22f9f11d8605169b24ae8c989e4da184301f9b7bfb05faa681c04220f41c29a1')
+
+prepare() {
+  # Fix permissions
+  find "$pkgname-sdk" -type d -exec chmod a+rx '{}' + \
+    -or -type f -exec chmod a+r '{}' +
+
+  cd "$pkgname-sdk/bin"
+
+  # Extract license (AUTHORS and LICENSE files are missing)
+  head -n5 "../include/dart_api.h" > ../../LICENSE
+}
+
+package() {
+  # Create directories
+  install -d "$pkgdir"{"/opt/$pkgname-sdk",/usr/{bin,"share/doc/$pkgname"}}
+
+  # Package the files
+  cp -a "$pkgname-sdk/"* "$pkgdir/opt/$pkgname-sdk/"
+
+  # Set up symbolic links for the executables
+  for f in dart dartaotruntime; do
+    ln -s "/opt/$pkgname-sdk/bin/$f" "$pkgdir/usr/bin/$f"
+  done
+
+  # Package documentation
+  install -Dm644 "$pkgdir/opt/$pkgname-sdk/README" -t "$pkgdir/usr/share/doc/$pkgname"
+
+  # BSD License
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

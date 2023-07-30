@@ -9,10 +9,10 @@
 
 pkgbase=qt5-base
 pkgname=(qt5-base qt5-xcb-private-headers)
-_basever=5.15.9
-pkgver=5.15.9+kde+r151
+_basever=5.15.10
+pkgver=5.15.10+kde+r135
 pkgrel=1
-_commit=84152777a48af444a902bbf4df8b38146171c20d
+_commit=9815348dd2fdc8c0eac8abd6f6219a3c2e1978fa
 arch=('x86_64')
 url='https://www.qt.io'
 license=('GPL3' 'LGPL3' 'FDL' 'custom')
@@ -73,6 +73,7 @@ build() {
     -dbus-linked \
     -system-harfbuzz \
     -journald \
+    -libproxy \
     -no-mimetype-database \
     -no-use-gold-linker \
     -no-reduce-relocations \
